@@ -1,22 +1,19 @@
 const http = require("http")
 const fs = require("fs")
-const moment = require("moment")
 
 const server = http.createServer((req, res) => {
-    if (req.url === "/") {
-        const path = require("path");
-
-        const html = fs.readFileSync(path.join(__dirname, "index.html"), "utf-8");
-        res.writeHead(200, {"Content-Type" : "text/html"})
-        res.end(html);
-    }
-    else if (req.url === "/time") {
-        const now = moment().format("YYYY-MM-DD, HH:mm:ss")
-        res.writeHead(200, {"Content-Type": "text/plain"});
-        res.end(now);
-    }
+    fs.readFile("index.html", "utf-8", (err, data) => {
+        if (err) {
+            res.writeHead(500,{"Content-Type" : "text/plain; charset=utf-8"})
+            res.end("서버에러 HTML파일을 읽을 수 없습니다.")
+        }
+        else {
+            res.writeHead(200,{"Content-Type" : "text/html; charset=utf-8"})
+            res.end(data)
+        }
+    })
 })
 
-server.listen(3000, ()=> {
-    console.log("server runnig at http://localhost:3000")
+server.listen(3000, () => {
+    console.log("http://localhost:3000")
 })
